@@ -1,0 +1,238 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Coderlust",
+    "description": "This is a sample apis for football website",
+    "contact": {
+      "email": "prachit.patil@codeburst.io"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:7000/api/v1"
+    },
+    {
+      "url": "http://localhost:7000/api/v1"
+    }
+  ],
+  "paths": {
+    "/signup": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create user",
+        "description": "Get the user information, validate and store it in database",
+        "requestBody": {
+          "description": "The user to create.",
+          "content": {
+            "application:json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User created succesfully",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User creation failed",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "email already exists"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "user"
+      }
+    },
+    "/signin": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Login user",
+        "description": "Login user into the website",
+        "requestBody": {
+          "description": "Login information.",
+          "content": {
+            "application:json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUser"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User created succesfully",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProp"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User creation failed",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "User with email does not exist... Please signup"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "user"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "rashy07"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "example": "Kodasndsak*92821"
+          }
+        }
+      },
+      "LoginUser": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "example": "Kodasndsak*92821"
+          }
+        }
+      },
+      "CreatedUser": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "number"
+              },
+              "_id": {
+                "type": "string",
+                "example": "5e6d4169de71e629c4d72417"
+              },
+              "name": {
+                "type": "string",
+                "example": "rashy07"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        }
+      },
+      "UserProp": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTZkNDE2OWRlNzFlNjI5YzRkNzI0MTciLCJpYXQiOjE1ODQyMTg0ODJ9.047XgfwyFZLoePjQWfNmFb9_T94H2j79x7CY8MizDTE"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "5e6d4169de71e629c4d72417"
+              },
+              "name": {
+                "type": "string",
+                "example": "rashy07"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "role": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "Standard400ErrorResponse": {
+        "description": "An unexpected error occured.",
+        "content": {
+          "application:josn": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  }
+}
