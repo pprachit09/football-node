@@ -9,4 +9,5 @@ install:
 deploy:
   provider: heroku
   api_key: $HEROKU_KEY
-  on: production
+  on: master
+  app: salty-citadel-56178
