@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Coderlust",
-    "description": "This is a sample apis for football website",
+    "description": "This is a sample apis for football website. All the apis work with Oauth 2.0 except singup and signin. Bearere token is must for all the other APIs.",
     "contact": {
       "email": "prachit.patil@codeburst.io"
     },
@@ -10,10 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://localhost:7000/api/v1"
-    },
-    {
-      "url": "http://localhost:7000/api/v1"
+      "url": "https://salty-citadel-56178.herokuapp.com/api/v1"
     }
   ],
   "paths": {
@@ -108,6 +105,141 @@
         },
         "x-codegen-request-body-name": "user"
       }
+    },
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user information",
+        "description": "Show user profile to the user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the user to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User information",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "No user found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update user information",
+        "description": "Update user information",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the user to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User information",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "No user found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logout user",
+        "description": "Signout the user from website",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the user to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User information",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "example": {
+                    "message": "Logout success"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found",
+            "content": {
+              "application:json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "No user found"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -181,6 +313,34 @@
                 "format": "date"
               }
             }
+          }
+        }
+      },
+      "UserInfo": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "number"
+          },
+          "_id": {
+            "type": "string",
+            "example": "5e6d4169de71e629c4d72417"
+          },
+          "name": {
+            "type": "string",
+            "example": "rashy07"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date"
           }
         }
       },
