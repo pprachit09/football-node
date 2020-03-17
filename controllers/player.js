@@ -1,18 +1,80 @@
+const formidable = require('formidable');
+const _ = require('lodash');
+const fs = require('fs');
 const Player = require('../models/players');
 const { errorHandler } = require('../helpers/dbErrorHandler');
 
-exports.addPlayer = (req, res) => {
-    const player = new Player(req.body);
-    console.log(req.body);
-    player.save((err, player) => {
-        if (err) {
-			return res.status(400).json({
-				err: errorHandler(err),
-			});
+exports.playerById = (req, res, next, id) => {
+    Player.findById(id).exec((err, player) => {
+        if (err || !player) {
+            return res.status(400).json({
+                error: "Player not found"
+            });
         }
-        res.json({
-            player,
-        })
+        req.player = player;
+        next();
+    })
+}
+
+exports.getPlayer = (req, res) => {
+    req.player.photo = undefined;
+    return res.json(req.player);
+}
+
+exports.addPlayer = (req, res) => {
+    let form = new formidable.IncomingForm()
+    form.keepExtensions = true
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            return res.status(400).json({
+                error: "Image could not be uploaded"
+            });
+        }
+        // Validate the fields
+        const {
+            firstname,
+            lastname,
+            role,
+            isActive,
+            age,
+            email,
+            team,
+            position
+        } = fields
+
+        if (!firstname ||
+            !lastname ||
+            !role || 
+            !isActive || 
+            !age || 
+            !email || 
+            !team || 
+            !position) {
+                return res.status(400).json({
+                    error: "All fields are required"
+                })
+        }
+
+        let player = new Player(fields)
+
+        if (files.photo) {
+            if (files.photo.size > 1000000) {
+                return res.status(400).json({
+                    error: "Image should be less than 1MB"
+                })
+            }
+            player.photo.data = fs.readFileSync(files.photo.path)
+            player.photo.contentType = files.photo.type
+        }
+
+        player.save((err, result) => {
+            if (err) {
+                return re.status(400).json({
+                    error: errorHandler(err)
+                })
+            }
+            res.json(result);
+        });
     });
 };
 
@@ -24,5 +86,77 @@ exports.getPlayers = (req, res) => {
             });
         }
         res.json(players)
+    });
+};
+
+exports.deletePlayer = (req, res) => {
+    let player = req.player;
+    player.remove(err => {
+        if (err) {
+            res.status(400).json({
+                error: 'players not found'
+            });
+        }
+        res.json({
+            message: 'player deleted'
+        })
+    });
+};
+
+exports.updatePlayer = (req, res) => {
+    let form = new formidable.IncomingForm()
+    form.keepExtensions = true
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            return res.status(400).json({
+                error: "Image could not be uploaded"
+            });
+        }
+        // Validate the fields
+        const {
+            firstname,
+            lastname,
+            role,
+            isActive,
+            age,
+            email,
+            team,
+            position
+        } = fields
+
+        if (!firstname ||
+            !lastname ||
+            !role || 
+            !isActive || 
+            !age || 
+            !email || 
+            !team || 
+            !position) {
+                return res.status(400).json({
+                    error: "All fields are required"
+                })
+        }
+
+        let player = req.player
+        player = _.extend(player, fields)
+
+        if (files.photo) {
+            if (files.photo.size > 1000000) {
+                return res.status(400).json({
+                    error: "Image should be less than 1MB"
+                })
+            }
+            player.photo.data = fs.readFileSync(files.photo.path)
+            player.photo.contentType = files.photo.type
+        }
+
+        player.save((err, result) => {
+            if (err) {
+                return re.status(400).json({
+                    error: errorHandler(err)
+                })
+            }
+            res.json(result);
+        });
     });
 };

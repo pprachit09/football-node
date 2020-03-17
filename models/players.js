@@ -43,7 +43,11 @@ const playerSchema = new mongoose.Schema({
         required: true,
         trim: true,
         maxlength: 32
-    }       
+    },
+    photo:{
+        data: Buffer,
+        contentType: String
+    }
 }, { timestamps: true })
 
 module.exports = mongoose.model('player', playerSchema)
